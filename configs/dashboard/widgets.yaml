@@ -1,0 +1,8 @@
+# CT 110: /opt/homepage/config/widgets.yaml
+# Home lab: Homepage top bar.
+- datetime:
+    text_size: md
+    format:
+      dateStyle: long
+      timeStyle: short
+      hour12: true

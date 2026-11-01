@@ -1,0 +1,20 @@
+# CT 110: /opt/homepage/config/settings.yaml
+# Home lab: Homepage settings.
+title: pve01 home lab
+description: Start page of the home lab
+theme: dark
+color: slate
+headerStyle: clean
+statusStyle: dot
+hideVersion: true
+disableUpdateCheck: true
+layout:
+  Infrastructure:
+    style: row
+    columns: 3
+  Monitoring:
+    style: row
+    columns: 4
+  Tools:
+    style: row
+    columns: 2

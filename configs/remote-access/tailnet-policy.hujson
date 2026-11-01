@@ -1,0 +1,42 @@
+// Tailscale admin console > Access controls (the tailnet policy file)
+// Tailnet policy: only the tailnet owner's devices may use the home subnet route
+// and the exit node on CT 101. Anyone invited or shared in later gets nothing
+// until a grant names them.
+{
+	"grants": [
+		// My devices reach each other.
+		{"src": ["autogroup:owner"], "dst": ["autogroup:self"], "ip": ["*"]},
+
+		// The subnet route through CT 101: the panels, the Proxmox web UI and
+		// the tailnet's DNS server (Pi-hole), which MagicDNS forwards to.
+		{"src": ["autogroup:owner"], "dst": ["<lan>.0/24"], "ip": ["*"]},
+
+		// The exit node on CT 101: internet traffic through home.
+		{"src": ["autogroup:owner"], "dst": ["autogroup:internet"], "ip": ["*"]},
+	],
+
+	// Tailscale SSH: unchanged default, each user only into their own devices.
+	"ssh": [
+		{
+			"action": "check",
+			"src":    ["autogroup:member"],
+			"dst":    ["autogroup:self"],
+			"users":  ["autogroup:nonroot", "root"],
+		},
+	],
+
+	// Checked on every save; a failing test blocks the save.
+	"tests": [
+		{
+			// Me: DNS, the HTTPS proxy, the Proxmox web UI, the exit node
+			// and one of my own devices.
+			"src":    "<my-login>",
+			"accept": ["<lan>.100:53", "<lan>.112:443", "<lan>.10:8006", "1.1.1.1:443", "<my-device>:3389"],
+		},
+		{
+			// Anyone else: nothing at home, no exit node, none of my devices.
+			"src":  "someone-else@example.com",
+			"deny": ["<lan>.100:53", "<lan>.112:443", "<lan>.10:8006", "1.1.1.1:443", "<my-device>:3389"],
+		},
+	],
+}

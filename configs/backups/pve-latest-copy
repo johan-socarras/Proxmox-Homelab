@@ -1,0 +1,27 @@
+#!/bin/sh
+# Home lab: keep /mnt/pve/backups/latest with the newest backup of every container and the newest copy of
+# this node's configuration, as hard links with fixed names (no extra space). Syncthing (CT 102) sends that folder to
+# another device at home, so there is a copy outside pve01. Run by the vzdump hook at the end of every backup job.
+set -eu
+B=/mnt/pve/backups
+L=$B/latest
+mountpoint -q $B || { echo "backups disk is not mounted" >&2; exit 1; }
+install -d -m 0755 $L $L/.stfolder
+[ -f $L/.stignore ] || printf '// Temporary links while a file is replaced\n.tmp-*\n' > $L/.stignore
+link() { # link <source> <name>: point $L/<name> at <source>, atomically
+  [ "$1" -ef "$L/$2" ] || { ln -f "$1" "$L/.tmp-$2" && mv -f "$L/.tmp-$2" "$L/$2"; }
+  keep="$keep $2"
+}
+keep=""
+for id in $(ls -1 $B/dump | sed -nE 's/^vzdump-lxc-([0-9]+)-.*\.tar\.zst$/\1/p' | sort -un); do
+  newest=$(ls -1t $B/dump/vzdump-lxc-$id-*.tar.zst | head -1)
+  name=$(pct config $id 2>/dev/null | sed -n 's/^hostname: //p')
+  link "$newest" "ct$id-${name:-deleted}.tar.zst"
+done
+cfg=$(ls -1t $B/pve-config/*-config-*.tar.gz 2>/dev/null | head -1 || true)
+[ -n "$cfg" ] && link "$cfg" "$(hostname -s)-config.tar.gz"
+for f in $L/*; do
+  b=$(basename "$f")
+  case " $keep " in *" $b "*) ;; *) rm -f "$f" ;; esac
+done
+echo "latest: $(ls $L | wc -l) files, $(du -sh --apparent-size $L | cut -f1)"

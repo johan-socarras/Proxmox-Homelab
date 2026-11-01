@@ -1,0 +1,12 @@
+# /etc/pve/firewall/112.fw (caddy-proxy): the one way into the panels
+[OPTIONS]
+
+log_level_in: info
+policy_in: DROP
+enable: 1
+
+[RULES]
+
+IN DROP -p tcp -dport 22 # SSH disabled: manage through the Proxmox shell and pct
+IN ACCEPT -source +dc/trusted-devices -p tcp -dport 443 # HTTPS to the panels: my devices (LAN and Tailscale)
+IN ACCEPT -source +dc/trusted-devices -p tcp -dport 80 # Redirect to HTTPS

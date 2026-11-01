@@ -1,0 +1,17 @@
+{{- $title := printf "pve01: %s" .CommonLabels.alertname -}}
+{{- $prio := 4 -}}
+{{- $tags := coll.Slice "rotating_light" "grafana" -}}
+{{- if eq .Status "resolved" -}}
+  {{- $title = printf "pve01: %s - resolved" .CommonLabels.alertname -}}
+  {{- $prio = 2 -}}
+  {{- $tags = coll.Slice "white_check_mark" "grafana" -}}
+{{- end -}}
+{{- $msg := "" -}}
+{{- range .Alerts -}}
+  {{- if eq .Status "resolved" -}}
+    {{- $msg = printf "%sOK: %s\n" $msg .Annotations.summary -}}
+  {{- else -}}
+    {{- $msg = printf "%s%s\n" $msg .Annotations.summary -}}
+  {{- end -}}
+{{- end -}}
+{{ coll.Dict "topic" .Vars.topic "title" $title "message" $msg "priority" $prio "tags" $tags | data.ToJSON }}

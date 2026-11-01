@@ -1,0 +1,16 @@
+[OPTIONS]
+
+log_level_in: info
+enable: 1
+policy_in: DROP
+
+[RULES]
+
+IN DHCPfwd(ACCEPT) -log nolog # DHCP for the whole house
+IN DROP -p tcp -dport 22 # SSH disabled: manage through the Proxmox shell and pct
+IN ACCEPT -p tcp -dport 7 # Reachability fallback (TCP echo); nothing listens, devices get a reset as before
+IN Ping(ACCEPT) # Home devices check DNS reachability with ping
+IN DNS(ACCEPT) # DNS for the whole house
+IN NTP(ACCEPT) # NTP for the whole house (unchanged)
+GROUP panel-access # Panels: only through the HTTPS proxy, plus monitoring
+

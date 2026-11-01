@@ -1,0 +1,12 @@
+# /etc/pve/firewall/1xx.fw, the same for CT 107 to CT 110 (CT 100, 105 and 106 add their own rules: 100.fw, 105.fw, 106.fw)
+[OPTIONS]
+
+log_level_in: info
+policy_in: DROP
+enable: 1
+
+[RULES]
+
+IN DROP -p tcp -dport 22 # SSH disabled: manage through the Proxmox shell and pct
+GROUP panel-access # Panels: only through the HTTPS proxy, plus monitoring
+

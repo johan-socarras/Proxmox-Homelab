@@ -1,0 +1,8 @@
+#!/bin/sh
+# Daily copy of this node's configuration (all of /etc, including /etc/pve, plus /root and /usr/local) to the backups disk; keeps the last 14
+set -eu
+DEST=/mnt/pve/backups/pve-config
+mountpoint -q /mnt/pve/backups || { echo "backups disk is not mounted" >&2; exit 1; }
+install -d -m 0700 "$DEST"
+tar --ignore-failed-read --warning=no-file-changed -czf "$DEST/$(hostname -s)-config-$(date +%F).tar.gz" -C / etc root usr/local || [ $? -eq 1 ]
+ls -1t "$DEST"/*-config-*.tar.gz | tail -n +15 | xargs -r rm --

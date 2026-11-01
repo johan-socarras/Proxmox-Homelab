@@ -1,0 +1,13 @@
+[OPTIONS]
+
+# Workaround, not a fix: resets from the guests are tracked on two bridges and lost on
+# the second one (Proxmox bug 4983). See docs/10-firewall.md, "Lost resets".
+nf_conntrack_allow_invalid: 1
+log_level_in: info
+
+[RULES]
+
+IN ACCEPT -source dc/prometheus -p tcp -dport 8006 # Prometheus: prometheus-pve-exporter reads the API
+IN ACCEPT -source dc/homepage -p tcp -dport 8006 # Homepage: Proxmox widget and status check
+IN Ping(ACCEPT) -source +dc/trusted-devices # Ping from my devices
+IN ACCEPT -source +dc/trusted-devices -p tcp -dport 8006 # Web UI and API: my devices (LAN and Tailscale)

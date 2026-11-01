@@ -1,0 +1,6 @@
+// Home lab: unattended-upgrades installs only Debian security updates
+#clear Unattended-Upgrade::Origins-Pattern;
+Unattended-Upgrade::Origins-Pattern {
+	"origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+	"origin=Debian,codename=${distro_codename},label=Debian-Security";
+};

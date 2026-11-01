@@ -1,0 +1,12 @@
+[OPTIONS]
+
+log_level_in: info
+policy_in: DROP
+enable: 1
+
+[RULES]
+
+IN DROP -p tcp -dport 22 # SSH disabled: manage through the Proxmox shell and pct
+IN ACCEPT -source <lan>.1 -p udp -dport 514 # Router syslog
+GROUP panel-access # Panels: only through the HTTPS proxy, plus monitoring
+

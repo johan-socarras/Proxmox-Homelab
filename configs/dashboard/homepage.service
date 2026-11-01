@@ -1,0 +1,28 @@
+# Home lab: Homepage (gethomepage.dev) v2.5.0 built from source in /opt/homepage, on port 80, with the
+# official Node.js 22 LTS in /opt/node, updated by hand (docs/08). Debian 13 ships Node 20.19, and Homepage 2.5.0's
+# locked dependencies need 22 (undici 8, via @kubernetes/client-node, needs 22.19 or later).
+[Unit]
+Description=Homepage dashboard for the home lab (homepage.lan)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=homepage
+Group=homepage
+WorkingDirectory=/opt/homepage
+Environment=NODE_ENV=production
+Environment=PATH=/opt/node/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=HOSTNAME=0.0.0.0
+Environment=PORT=80
+Environment=NEXT_TELEMETRY_DISABLED=1
+Environment=HOMEPAGE_ALLOWED_HOSTS=homepage.lan,<lan>.110
+# Read-only Proxmox API token for the Proxmox widget (homepage@pve!dashboard).
+EnvironmentFile=/etc/homepage/homepage.env
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+ExecStart=/opt/node/bin/node /opt/homepage/node_modules/next/dist/bin/next start -p 80
+Restart=on-failure
+RestartSec=10
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

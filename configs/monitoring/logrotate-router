@@ -1,0 +1,11 @@
+/var/log/router/router.log {
+    weekly
+    rotate 26
+    compress
+    delaycompress
+    missingok
+    notifempty
+    postrotate
+        /usr/lib/rsyslog/rsyslog-rotate
+    endscript
+}

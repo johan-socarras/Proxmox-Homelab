@@ -1,0 +1,7 @@
+[Unit]
+Description=Copy this node's configuration to the backups disk
+RequiresMountsFor=/mnt/pve/backups
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/pve-config-backup

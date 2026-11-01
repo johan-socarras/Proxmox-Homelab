@@ -1,0 +1,13 @@
+# CT 108: /etc/grafana/provisioning/datasources/prometheus.yaml
+# Home lab: Prometheus in CT 107 as the default data source.
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://<lan>.107:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      timeInterval: 30s

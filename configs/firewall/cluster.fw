@@ -1,0 +1,53 @@
+[OPTIONS]
+
+enable: 1
+
+[ALIASES]
+
+local_network <lan>.10 # Single node: only pve01 itself; admin access comes from the admin-access group
+pve01 <lan>.10 # pve01 host: sends Proxmox and smartd alerts to ntfy
+pihole <lan>.100 # pihole-dns CT 100
+syncthing <lan>.102 # syncthing CT 102
+uptime-kuma <lan>.105 # uptime-kuma CT 105
+ntfy <lan>.106 # ntfy CT 106
+prometheus <lan>.107 # prometheus CT 107
+grafana <lan>.108 # grafana CT 108
+netbox <lan>.109 # netbox CT 109
+homepage <lan>.110 # homepage CT 110
+
+[IPSET trusted-devices] # My own devices; Tailscale traffic arrives from CT 101 (SNAT)
+
+<lan>.20 # my device (reservation in Pi-hole's DHCP)
+<lan>.21 # my device (reservation in Pi-hole's DHCP)
+<lan>.22 # my device (reservation in Pi-hole's DHCP)
+<lan>.101 # tailscale CT 101: my devices away from home
+
+[IPSET reverse-proxy] # HTTPS reverse proxy
+
+<lan>.112 # caddy-proxy CT 112
+
+[group admin-access] # My devices, plus Homepage's status check
+
+IN ACCEPT -source dc/homepage -dest dc/syncthing -p tcp -dport 8384 # Homepage status check
+IN ACCEPT -source +dc/trusted-devices # My devices (LAN and Tailscale)
+
+[group panel-access] # Panels: the HTTPS proxy and each monitoring flow, one port per rule
+
+IN ACCEPT -source +dc/reverse-proxy -dest dc/pihole -p tcp -dport 80 # HTTPS proxy: pihole.lan
+IN ACCEPT -source +dc/reverse-proxy -dest dc/uptime-kuma -p tcp -dport 3001 # HTTPS proxy: uptime-kuma.lan
+IN ACCEPT -source +dc/reverse-proxy -dest dc/ntfy -p tcp -dport 80 # HTTPS proxy: ntfy.lan
+IN ACCEPT -source +dc/reverse-proxy -dest dc/prometheus -p tcp -dport 9090 # HTTPS proxy: prometheus.lan
+IN ACCEPT -source +dc/reverse-proxy -dest dc/grafana -p tcp -dport 3000 # HTTPS proxy: grafana.lan
+IN ACCEPT -source +dc/reverse-proxy -dest dc/netbox -p tcp -dport 80 # HTTPS proxy: netbox.lan
+IN ACCEPT -source +dc/reverse-proxy -dest dc/homepage -p tcp -dport 80 # HTTPS proxy: homepage.lan
+IN ACCEPT -source dc/grafana -dest dc/prometheus -p tcp -dport 9090 # Grafana data source
+IN ACCEPT -source dc/homepage -dest dc/prometheus -p tcp -dport 9090 # Homepage widget
+IN ACCEPT -source dc/homepage -dest dc/uptime-kuma -p tcp -dport 3001 # Homepage widget
+IN ACCEPT -source dc/homepage -dest dc/grafana -p tcp -dport 3000 # Homepage status check
+IN ACCEPT -source dc/homepage -dest dc/pihole -p tcp -dport 80 # Homepage status check
+IN ACCEPT -source dc/homepage -dest dc/ntfy -p tcp -dport 80 # Homepage status check
+IN ACCEPT -source dc/homepage -dest dc/netbox -p tcp -dport 80 # Homepage status check
+IN ACCEPT -source dc/uptime-kuma -dest dc/ntfy -p tcp -dport 80 # Alerts to ntfy
+IN ACCEPT -source dc/grafana -dest dc/ntfy -p tcp -dport 80 # Alerts to ntfy
+IN ACCEPT -source dc/pve01 -dest dc/ntfy -p tcp -dport 80 # Proxmox and smartd alerts to ntfy
+IN Ping(ACCEPT) -source +dc/trusted-devices # Ping from my devices

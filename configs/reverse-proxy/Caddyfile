@@ -1,0 +1,39 @@
+# CT 112 (caddy-proxy) /etc/caddy/Caddyfile: HTTPS in front of the homelab panels, certificates from Caddy's own CA.
+{
+	local_certs
+	skip_install_trust
+}
+
+# The root certificate, over plain HTTP, so a device can fetch it before it trusts the CA.
+http://<lan>.112 {
+	root * /etc/caddy/pub
+	file_server
+}
+
+grafana.lan {
+	reverse_proxy <lan>.108:3000
+}
+
+netbox.lan {
+	reverse_proxy <lan>.109:80
+}
+
+uptime-kuma.lan {
+	reverse_proxy <lan>.105:3001
+}
+
+prometheus.lan {
+	reverse_proxy <lan>.107:9090
+}
+
+pihole.lan {
+	reverse_proxy <lan>.100:80
+}
+
+ntfy.lan {
+	reverse_proxy <lan>.106:80
+}
+
+homepage.lan {
+	reverse_proxy <lan>.110:80
+}

@@ -1,0 +1,12 @@
+# /etc/pve/firewall/106.fw (ntfy): the same as ct-panel.fw; the ntfy app on my devices reaches ntfy through the HTTPS proxy
+[OPTIONS]
+
+log_level_in: info
+policy_in: DROP
+enable: 1
+
+[RULES]
+
+IN DROP -p tcp -dport 22 # SSH disabled: manage through the Proxmox shell and pct
+GROUP panel-access # Panels: only through the HTTPS proxy, plus monitoring
+

@@ -1,0 +1,12 @@
+# /etc/pve/firewall/102.fw (Syncthing): admin access only. The panels use ct-panel.fw instead
+[OPTIONS]
+
+log_level_in: info
+policy_in: DROP
+enable: 1
+
+[RULES]
+
+IN DROP -p tcp -dport 22 # SSH disabled: manage through the Proxmox shell and pct
+GROUP admin-access # Admin access only
+

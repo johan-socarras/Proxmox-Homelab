@@ -1,0 +1,15 @@
+# ntfy server for pve01 alerts (Proxmox, smartd, Uptime Kuma, Grafana). Port 80 only for the senders inside pve01; my devices go through the HTTPS proxy (https://ntfy.lan, CT 112).
+# Nobody can read or write by default; the alerts topic is read-only for everyone (my devices) and
+# write-only for the "alerts-publisher" user, whose tokens live on pve01 in /root/ntfy/ (see setup-ntfy.sh there).
+base-url: "https://ntfy.lan"
+listen-http: ":80"
+cache-file: "/var/cache/ntfy/cache.db"
+cache-duration: "72h"
+auth-file: "/var/lib/ntfy/user.db"
+auth-default-access: "deny-all"
+enable-signup: false
+
+# Proxmox backup reports for every container are longer than the 4K default and were rejected
+# ("attachments not allowed"). There is no Firebase here (the app connects to this server), so allow longer text.
+message-size-limit: "32k"
+behind-proxy: true

@@ -1,0 +1,62 @@
+# Home lab: Homepage services (CT 110, homepage.lan).
+- Infrastructure:
+    - Proxmox:
+        icon: /icons/proxmox.svg
+        href: https://<lan>.10:8006
+        description: pve01, the Proxmox VE node
+        siteMonitor: https://<lan>.10:8006
+        widget:
+          type: proxmox
+          url: https://<lan>.10:8006
+          username: "{{HOMEPAGE_VAR_PVE_TOKEN_ID}}"
+          password: "{{HOMEPAGE_VAR_PVE_TOKEN_SECRET}}"
+          node: pve01
+    - Pi-hole:
+        icon: /icons/pi-hole.svg
+        href: https://pihole.lan/admin/
+        description: DNS and ad blocking for the whole house (CT 100)
+        siteMonitor: http://<lan>.100/admin/login
+    - Router:
+        icon: /icons/router.svg
+        href: http://<lan>.1
+        description: Home router, gateway and Wi-Fi
+        siteMonitor: http://<lan>.1
+
+- Monitoring:
+    - Grafana:
+        icon: /icons/grafana.svg
+        href: https://grafana.lan
+        description: History of pve01 and every container, alerts to ntfy (CT 108)
+        siteMonitor: http://<lan>.108:3000/api/health
+    - Prometheus:
+        icon: /icons/prometheus.svg
+        href: https://prometheus.lan
+        description: Metrics from Proxmox (CT 107)
+        widget:
+          type: prometheus
+          url: http://<lan>.107:9090
+    - Uptime Kuma:
+        icon: /icons/uptime-kuma.svg
+        href: https://uptime-kuma.lan
+        description: Router, Pi-hole and internet checks (CT 105)
+        widget:
+          type: uptimekuma
+          url: http://<lan>.105:3001
+          slug: home
+    - ntfy:
+        icon: /icons/ntfy.svg
+        href: https://ntfy.lan
+        description: Alerts to my devices (CT 106)
+        siteMonitor: http://<lan>.106/v1/health
+
+- Tools:
+    - NetBox:
+        icon: /icons/netbox.svg
+        href: https://netbox.lan
+        description: Inventory of the home network (CT 109)
+        siteMonitor: http://<lan>.109/api/status/
+    - Syncthing:
+        icon: /icons/syncthing.svg
+        href: https://syncthing.lan:8384
+        description: File-sync hub; sends the newest backups to another device (CT 102)
+        siteMonitor: https://<lan>.102:8384/rest/noauth/health
