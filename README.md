@@ -42,71 +42,7 @@ being able to rebuild any service from last night's backup.
 > generalized, and the network keeps changing after publication, so addresses, names
 > and versions here may no longer match what runs at home.
 
-```mermaid
-flowchart TB
-    Internet(("Internet"))
-    Remote["My devices away from home"]
-    Router["Home router<br/>Wi-Fi"]
-    Devices["Home devices"]
-    PC["My devices at home"]
-    COPY["Another device<br/>at home"]
-
-    subgraph PVE["pve01 · Proxmox VE"]
-        subgraph NET["Network services"]
-            DNS["CT 100<br/>Pi-hole + Unbound<br/>DNS · DHCP"]
-            VPN["CT 101<br/>Tailscale"]
-            PROXY["CT 112<br/>Caddy HTTPS proxy"]
-        end
-        subgraph OBS["Monitoring and alerting"]
-            KUMA["CT 105<br/>Uptime Kuma"]
-            PROM["CT 107<br/>Prometheus"]
-            GRAF["CT 108<br/>Grafana"]
-            NTFY["CT 106<br/>ntfy"]
-        end
-        subgraph OPS["Inventory and backups"]
-            NB["CT 109<br/>NetBox"]
-            HP["CT 110<br/>Homepage"]
-            BK[("Backup SSD")]
-            SYNC["CT 102<br/>Syncthing"]
-        end
-        OPN["VM 200<br/>OPNsense"]
-        subgraph LAB["vmbr1 · lab LAN"]
-            DC["VM 210<br/>AD domain controller"]
-            W11["VM 211<br/>AD workstation"]
-            CLI["CT 201<br/>Debian client"]
-        end
-        subgraph SBX["vmbr2 · sandbox"]
-            BRW["VM 220<br/>Browser sandbox"]
-            GW["VM 230<br/>Whonix Gateway"]
-        end
-        subgraph TOR["vmbr3 · Whonix internal"]
-            WS["VM 231<br/>Whonix Workstation"]
-        end
-    end
-
-    Internet --- Router
-    Router --- Devices
-    Devices -- "DNS" --> DNS
-    DNS -- "DNS over TLS, DNSSEC" --> Internet
-    Remote -. "Tailscale" .-> VPN
-    VPN -- "DNS" --> DNS
-    PC -- "HTTPS" --> PROXY
-    PROXY -- "panels" --> GRAF
-    PROM --> GRAF
-    GRAF -- "alerts" --> NTFY
-    KUMA -- "alerts" --> NTFY
-    NTFY -- "alerts" --> PROXY
-    PROXY -. "push over HTTPS" .-> Remote
-    BK -- "newest copy" --> SYNC
-    SYNC -- "one-way sync" --> COPY
-    Router --- OPN
-    OPN --- DC
-    OPN --- W11
-    OPN --- CLI
-    OPN --- BRW
-    OPN --- GW
-    GW --- WS
-```
+![Network map, read from the internet down: the home router, the home LAN with my own devices, every other device and the device that receives the backups, and pve01 with its services and the labs behind OPNsense. Six flows are drawn, each in its own color: DNS, remote access over Tailscale, the panels over HTTPS, alerts, backups and the labs](docs/img/network-map.png)
 
 Everything described here was built and running when it was written. Each page explains what a service does, how
 it is built, why it is built that way, and how to verify it.
