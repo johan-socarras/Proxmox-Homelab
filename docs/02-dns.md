@@ -8,6 +8,21 @@ device, and passes everything else to Unbound, which runs in the same container.
 Unbound sends those queries to Quad9 inside an encrypted TLS connection and validates
 DNSSEC on the answers. Nothing Pi-hole passes on leaves the house in plain text.
 
+```mermaid
+flowchart LR
+    DEV["Home devices"]
+    TS["My devices on Tailscale<br/>through CT 101"]
+    subgraph CT["CT 100 · pihole-dns"]
+        PH["Pi-hole<br/>blocklist · local .lan names · DHCP"]
+        UB["Unbound<br/>127.0.0.1:5335 · DNSSEC validation"]
+    end
+    Q9(("Quad9"))
+    DEV -- "DNS" --> PH
+    TS -- "DNS" --> PH
+    PH -- "everything else" --> UB
+    UB -- "DNS over TLS, port 853" --> Q9
+```
+
 ## How it is built
 
 - **CT 100 `pihole-dns`**, at `<lan>.100`, starts at boot.
@@ -109,14 +124,3 @@ The dashboard over the last 24 hours, captured before Pi-hole took over DHCP. Un
 `localhost#5335` is Unbound. The redacted entry is the router: at the time, Pi-hole asked
 it for the names of the devices it did not know (conditional forwarding). Now Pi-hole
 hands out the addresses and knows every name itself, so that forwarding was removed.
-
-![Pi-hole's four top lists: permitted domains, blocked domains, clients and clients with blocked queries](img/pihole-top-lists.png)
-
-The four top lists, further down the same dashboard. The most blocked domains are
-telemetry and ad networks. Pi-hole also blocks the private relay services some
-operating systems offer by default; I kept that default. A relay would send those
-devices' traffic and DNS past the blocklist; on this network, filtering for every device
-matters more than hiding browsing from the ISP. The domain names, which would show the
-kinds of devices and apps at home, and the names of the household devices are
-redacted; `uptime-kuma.lan` and `tailscale.lan` are the homelab's own clients: the monitoring probes and the
-devices connected through the VPN.

@@ -54,6 +54,20 @@ instead of the home's public address.
 
 ## Root cause
 
+```mermaid
+flowchart LR
+    Q["Plain DNS query, port 53<br/>to any address"]
+    ISP["ISP resolver<br/>answers every query"]
+    ROOT["Root server<br/>198.41.0.4"]
+    EMPTY["203.0.113.77<br/>no DNS server there"]
+    UB["Unbound on Pi-hole"]
+    Q9(("Quad9"))
+    Q -- "redirected" --> ISP
+    Q -. "never arrives" .-x ROOT
+    Q -. "never arrives" .-x EMPTY
+    UB -- "DNS over TLS, port 853<br/>not intercepted" --> Q9
+```
+
 Everything points to the upstream network, which I do not manage: it redirects all plain
 DNS on port 53 to the ISP's resolvers. Two resolvers reacted differently:
 

@@ -1,4 +1,19 @@
-# Proxmox Homelab
+<h1 align="center">Proxmox Homelab</h1>
+
+<p align="center">
+  Home network services and isolated lab networks on one Proxmox VE server.<br>
+  Documentation, sanitized configuration files and troubleshooting case studies.
+</p>
+
+<p align="center">
+  <a href="https://github.com/johan-socarras/Proxmox-Homelab/actions/workflows/checks.yml"><img alt="Checks" src="https://github.com/johan-socarras/Proxmox-Homelab/actions/workflows/checks.yml/badge.svg"></a>
+  <img alt="Proxmox VE 9" src="https://img.shields.io/badge/Proxmox%20VE-9-e57000">
+  <a href="docs/README.md"><img alt="12 pages and 4 case studies" src="https://img.shields.io/badge/docs-12%20pages%20%C2%B7%204%20case%20studies-2bb3ff"></a>
+  <a href="LICENSE"><img alt="Configuration files: MIT" src="https://img.shields.io/badge/configs-MIT-blue"></a>
+  <a href="LICENSE-docs"><img alt="Documentation: CC BY 4.0" src="https://img.shields.io/badge/docs-CC%20BY%204.0-blue"></a>
+</p>
+
+![The homelab at a glance: network services, monitoring and alerting, inventory and backups on pve01, and the labs behind OPNsense](docs/img/homelab-overview.png)
 
 One Proxmox VE server that runs my home network: filtered, encrypted DNS for every
 device, remote access over Tailscale, monitoring with alerts to my devices, an IP
@@ -10,8 +25,6 @@ browsing with Whonix.
 sends its queries out encrypted, the home network reachable from anywhere
 without opening a single port, knowing what broke and where without guessing, and
 being able to rebuild any service from last night's backup.
-
-![The pve01 node in Proxmox: the containers and VMs with their tags, uptime and resource use, captured before the HTTPS proxy (CT 112) was added](docs/img/proxmox-datacenter.png)
 
 **What I learned building it:**
 
@@ -25,9 +38,9 @@ being able to rebuild any service from last night's backup.
   success ([Backups](docs/07-backups.md)).
 
 > **A snapshot, not a live map.** This repository documents how the home lab was
-> designed and built. Identifying details are left out or generalized, and the network
-> keeps changing after publication, so addresses, names and versions here may no
-> longer match what runs at home.
+> designed and built, as of November 2026. Identifying details are left out or
+> generalized, and the network keeps changing after publication, so addresses, names
+> and versions here may no longer match what runs at home.
 
 ```mermaid
 flowchart TB
@@ -187,8 +200,8 @@ Real incidents from this network, written up as investigations:
 
 | Path | What it holds |
 |---|---|
-| `docs/` | One page per area, numbered in reading order |
-| `troubleshooting/` | The four case studies |
+| `docs/` | One page per area, numbered in reading order ([index](docs/README.md)) |
+| `troubleshooting/` | The four case studies ([index](troubleshooting/README.md)) |
 | `configs/` | Sanitized copies of the running configuration files and scripts, by area ([index](configs/README.md)) |
 
 ## Security and privacy

@@ -28,6 +28,18 @@ service in this repository runs on it, as an LXC container or a KVM virtual mach
 `backups` is flagged `is_mountpoint`: if the drive is missing, a backup job fails
 instead of quietly filling the system disk.
 
+```mermaid
+flowchart LR
+    subgraph SYS["System disk · SATA SSD"]
+        LOCAL["local<br/>ext4 · root logical volume<br/>the OS, ISO images, container templates"]
+        LVM["local-lvm<br/>LVM-thin pool<br/>container and VM disks"]
+    end
+    subgraph BKP["Backup disk · second SSD"]
+        BACKUPS[("backups<br/>ext4 · /mnt/pve/backups<br/>backup archives only")]
+    end
+    LVM -- "nightly backups" --> BACKUPS
+```
+
 **Containers.** Every service container is Debian 13, unprivileged, with
 `nesting=1` (systemd 257 needs it inside unprivileged containers). Each one has:
 

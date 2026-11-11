@@ -6,6 +6,21 @@ From anywhere, my devices can reach the home network as if they were at home, an
 use Pi-hole for DNS, so their lookups keep the home blocklist on any network. With the
 exit node selected, all of their internet traffic leaves through the house as well.
 
+```mermaid
+flowchart LR
+    AWAY["My devices<br/>away from home"]
+    subgraph PVE["pve01"]
+        TS["CT 101 · tailscale-vpn<br/>subnet router · exit node<br/>source NAT on"]
+        DNS["CT 100 · Pi-hole<br/>DNS server of the tailnet"]
+    end
+    LAN["Home LAN"]
+    NET(("Internet"))
+    AWAY -. "Tailscale<br/>no open ports" .-> TS
+    TS -- "DNS" --> DNS
+    TS -- "subnet route" --> LAN
+    TS -- "exit node" --> NET
+```
+
 ## How it is built
 
 - **CT 101 `tailscale-vpn`**, unprivileged, at `<lan>.101`, starts at boot. Tailscale comes

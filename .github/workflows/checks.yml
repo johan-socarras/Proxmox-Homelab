@@ -1,0 +1,38 @@
+name: Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Links, images and image metadata
+        run: python3 .github/scripts/check-docs.py
+
+      - name: YAML files are well-formed
+        run: |
+          python3 -c 'import yaml' 2>/dev/null || sudo apt-get install -y python3-yaml
+          git ls-files '*.yml' '*.yaml' | xargs python3 -c '
+          import sys, yaml
+          for name in sys.argv[1:]:
+              with open(name, encoding="utf-8") as f:
+                  list(yaml.safe_load_all(f))
+              print("ok", name)
+          '
+
+      - name: No secret, home address or hardware address committed
+        run: |
+          if grep -rnIP 'PRIVATE KEY|tk_[A-Za-z0-9]{20,}|glsa_[A-Za-z0-9_]{20,}|192\.168\.(?!0\.0/16)[0-9]|100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\.[0-9]+\.[0-9]+(?!/10)|\b([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}\b' \
+              --exclude-dir=.git --exclude-dir=.github .; then
+            echo "::error::A secret, a home LAN or tailnet address, or a MAC address is committed"
+            exit 1
+          fi
