@@ -8,7 +8,7 @@
 ## The report
 
 On the afternoon Unbound replaced Google and Cloudflare as Pi-hole's upstream
-([DNS](../docs/02-dns.md)), two complaints came in: an app stopped working on one device,
+([DNS](../docs/02-dns.md)), two problems came in: an streaming app stopped working on one device,
 and a sign-in page would not load on another.
 
 ## Narrowing it down
