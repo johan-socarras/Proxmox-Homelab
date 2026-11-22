@@ -1,1 +1,5 @@
 * text=auto eol=lf
+
+# This repository is documentation. The helper scripts under configs/ are copies of
+# what runs on the server, so they stay out of GitHub's language statistics.
+configs/** linguist-documentation
