@@ -21,9 +21,8 @@ Debian — is updated by hand, after a snapshot.
 
 ## What runs, and how it is updated
 
-Versions as read on the node when these pages were written; Caddy, on CT 112, was read
-when it was added. Every service container runs Debian 13.7; the node runs Proxmox VE
-9.2.21 on kernel 7.0.14.
+Versions as read on the node when each page was written. Every service container runs
+Debian 13.7; the node runs Proxmox VE 9.2.21 on kernel 7.0.14.
 
 | Software | Version | Comes from | Updated |
 |---|---|---|---|

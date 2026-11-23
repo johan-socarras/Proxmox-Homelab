@@ -1,5 +1,5 @@
 #!/bin/sh
-# Home lab: keep /mnt/pve/backups/latest with the newest backup of every container and the newest copy of
+# Keep /mnt/pve/backups/latest with the newest backup of every container and the newest copy of
 # this node's configuration, as hard links with fixed names (no extra space). Syncthing (CT 102) sends that folder to
 # another device at home, so there is a copy outside pve01. Run by the vzdump hook at the end of every backup job.
 set -eu

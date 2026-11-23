@@ -64,8 +64,8 @@ one cannot break the other.
   ([why](11-browser-sandbox.md#lesson-learned-the-pi-hole-saw-the-router-instead-of-the-sandbox)).
 - **DNS:** OPNsense's Unbound forwards every query to the Pi-hole (*Query Forwarding*,
   all domains), so the labs get the home blocklist, DNSSEC validation and the encrypted
-  upstream ([DNS](02-dns.md)). It started as a recursive resolver, which never worked on
-  this network: [TSH-04](../troubleshooting/04-isp-intercepted-dns.md).
+  upstream ([DNS](02-dns.md)). Recursion does not work on this network:
+  [TSH-04](../troubleshooting/04-isp-intercepted-dns.md).
 - **DHCP options on the lab LAN:** option 6 (DNS server) is the domain controller,
   `10.10.10.10`, and option 15 (domain name) is `ad.lab`, so clients find the domain
   without manual settings. SANDBOX hands out the Pi-hole instead.
@@ -125,9 +125,9 @@ ad.lab
   - `Lab - Logon banner`, linked to `Computers`: a legal notice before sign-in;
   - `Lab - Sales no Control Panel`, linked to `Sales`: removes Control Panel and Settings
     for that department.
-- **Time:** the domain's time source. It takes the time from OPNsense
-  (`w32tm /config /manualpeerlist:10.10.10.1 /syncfromflags:manual /reliable:yes /update`), and
-  the domain members take it from the domain controller.
+- **Time:** the domain's time source. It takes the time from OPNsense (`w32tm /config
+  /manualpeerlist:10.10.10.1 /syncfromflags:manual /reliable:yes /update`), and the
+  domain members take it from the domain controller.
 
 **VM 211 `windows-11-client`: Windows 11 Enterprise (evaluation), workstation `WS01`**
 
@@ -176,8 +176,8 @@ the domain controller before the workstation.
 - **One time source.** Kerberos rejects clocks more than five minutes apart. Both
   Windows VMs first kept their default time zone and read the VM clock, which follows
   the node's local time, so their UTC time was hours off; with the time zone corrected
-  and the hierarchy
-  above (OPNsense, then the domain controller, then the members), they agree.
+  and the hierarchy above (OPNsense, then the domain controller, then the members), they
+  agree.
 
 ## Lesson learned: the first NIC is the LAN
 

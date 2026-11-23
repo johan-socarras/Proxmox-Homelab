@@ -9,7 +9,7 @@ auth-file: "/var/lib/ntfy/user.db"
 auth-default-access: "deny-all"
 enable-signup: false
 
-# Proxmox backup reports for every container are longer than the 4K default and were rejected
+# Proxmox backup reports for every container are longer than the 4K default, which ntfy rejects
 # ("attachments not allowed"). There is no Firebase here (the app connects to this server), so allow longer text.
 message-size-limit: "32k"
 behind-proxy: true

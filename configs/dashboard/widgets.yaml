@@ -1,5 +1,4 @@
-# CT 110: /opt/homepage/config/widgets.yaml
-# Home lab: Homepage top bar.
+# Homepage top bar (CT 110: /opt/homepage/config/widgets.yaml).
 - datetime:
     text_size: md
     format:

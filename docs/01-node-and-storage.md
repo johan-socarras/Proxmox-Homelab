@@ -11,7 +11,7 @@ service in this repository runs on it, as an LXC container or a KVM virtual mach
 |---|---|
 | CPU | 4 cores, desktop class |
 | Memory | 32 GB |
-| System disk | SATA SSD: Proxmox itself and every container and VM disk; to be replaced soon ([TSH-03](../troubleshooting/03-failing-system-ssd.md)) |
+| System disk | SATA SSD: Proxmox itself and every container and VM disk; reallocating sectors at the time of writing ([TSH-03](../troubleshooting/03-failing-system-ssd.md)) |
 | Backup disk | A second SSD, used only for backups |
 | Hypervisor | Proxmox VE 9.2, updated from the no-subscription repository; legacy BIOS boot |
 | Network | One NIC, attached to the Linux bridge `vmbr0` (the home LAN) |

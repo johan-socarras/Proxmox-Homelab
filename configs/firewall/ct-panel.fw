@@ -1,4 +1,4 @@
-# /etc/pve/firewall/1xx.fw, the same for CT 107 to CT 110 (CT 100, 105 and 106 add their own rules: 100.fw, 105.fw, 106.fw)
+# /etc/pve/firewall/1xx.fw, the same for CT 106 to CT 110 (CT 100 and 105 add their own rules: 100.fw, 105.fw)
 [OPTIONS]
 
 log_level_in: info

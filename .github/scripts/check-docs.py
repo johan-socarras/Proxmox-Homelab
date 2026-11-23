@@ -3,8 +3,9 @@
 
 - Every relative link and image in the Markdown files points at a file that exists,
   and every #anchor at a heading of the page it links to.
-- Every PNG holds only the image itself (IHDR, IDAT, IEND): no text chunks, so no
-  capture time and no program name travel with a screenshot.
+- Every PNG holds only the image itself (IHDR, IDAT, IEND, and PLTE and tRNS for
+  palette images): no text chunks, so no capture time and no program name travel with
+  a screenshot.
 
 Run it from the root of the repository: python3 .github/scripts/check-docs.py
 """
@@ -20,7 +21,8 @@ HEADING = re.compile(r'^#{1,6}\s+(.*)$', re.M)
 FENCE = re.compile(r'```.*?```', re.S)
 
 
-def tracked(pattern):
+def repo_files(pattern):
+    """Files git tracks or would add (new but not ignored), so a file is checked before its commit."""
     out = subprocess.run(['git', 'ls-files', '--cached', '--others', '--exclude-standard', pattern],
                          capture_output=True, text=True, check=True).stdout
     return [Path(line) for line in out.splitlines() if Path(line).exists()]
@@ -33,7 +35,7 @@ def slug(heading):
 
 
 def check_links():
-    pages = tracked('*.md')
+    pages = repo_files('*.md')
     anchors = {p: {slug(h) for h in HEADING.findall(FENCE.sub('', p.read_text(encoding='utf-8')))} for p in pages}
     problems, count = [], 0
     for page in pages:
@@ -56,7 +58,7 @@ def check_links():
 
 def check_images():
     problems = []
-    images = tracked('*.png')
+    images = repo_files('*.png')
     for image in images:
         data = image.read_bytes()
         if data[:8] != b'\x89PNG\r\n\x1a\n':

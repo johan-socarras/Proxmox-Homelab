@@ -1,4 +1,4 @@
-# Home lab: prometheus-pve-exporter (PyPI, venv in /opt/prometheus-pve-exporter).
+# prometheus-pve-exporter (PyPI, venv in /opt/prometheus-pve-exporter).
 # Reads pve01 with the read-only API token in /etc/prometheus/pve.yml and serves metrics to Prometheus on localhost only.
 [Unit]
 Description=Prometheus exporter for Proxmox VE (pve01, read-only token)

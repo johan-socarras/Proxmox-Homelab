@@ -44,11 +44,10 @@ every day about the same numbers gets ignored. The `DEVICESCAN` line in
 ## The first real alert
 
 The first change in nine days came on a morning of heavy writes, with four new
-containers being installed: `Reallocated_Sector_Ct` went from 16 to 17, and the
-pending count followed. smartd
-sent a high-priority alert, *SMART error (Usage) detected on host: pve01*, which
-reached me away from home through Tailscale. Health was still `PASSED`, with no
-read or write errors in the kernel log.
+containers being installed: `Reallocated_Sector_Ct` went from 16 to 17, and the pending
+count followed. smartd sent a high-priority alert, *SMART error (Usage) detected on
+host: pve01*, which reached me away from home through Tailscale. Health was still
+`PASSED`, with no read or write errors in the kernel log.
 
 ## Decision
 
@@ -59,8 +58,7 @@ Treat the disk as failing:
 - A full manual backup of every container ran right after the alert, so that day's
   work did not depend on the disk.
 - The newest backups now leave the server every night.
-- Because the problem was caught early, the disk will be replaced soon, while it still
-  works.
+- Replace the disk while it still works: the problem was caught early.
 - Replacing the disk means reinstalling Proxmox and restoring from these backups.
   Restoring one container from a nightly backup has been tested: it started, and its
   service answered ([Backups](../docs/07-backups.md#tested)). Rebuilding the whole node

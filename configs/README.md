@@ -1,33 +1,27 @@
 # Configuration files
 
 Copies of the files that run on `pve01`, by area. Each one was read on the node or
-compared with it by SHA-256 (apart from a header comment saying where it lives) when
-it was set up or last changed, before the values below were replaced. The two Grafana
-provisioning files and the three Homepage files are copies taken when each service was
-set up and were not compared. The NetBox configuration was compared line by line, with
-its three secrets replaced on the node before the comparison.
+compared with it by SHA-256 (apart from its comments) when it was set up or last
+changed, before the values below were replaced. The two Grafana provisioning files and
+the three Homepage files are copies taken when each service was set up and were not
+compared. The NetBox configuration was compared line by line, with its three secrets
+replaced on the node before the comparison.
 
-**Placeholders:** `<lan>.N` is an address on the home LAN with the network prefix left
-out (the host number follows the container ID, as in the [README](../README.md#security-and-privacy)),
-`<isp-gateway>` is the ISP's device in front of the home router, `<admin-user>` is a
-local login name, `<my-login>` is my Tailscale login, `<my-device>` is one of my
-devices' Tailscale address, and `<timezone>` is the server's time zone. Apart from NetBox's
-`configuration.py`, whose three secrets are replaced by `<...>`, no secret is in these
-files: the scripts read them at run time from root-only files on the node.
+**Placeholders:** `<lan>.N` is a home LAN address
+([README](../README.md#security-and-privacy)), `<isp-gateway>` is the ISP's device in
+front of the home router, `<admin-user>` is a local login name, `<my-login>` is my
+Tailscale login, `<my-device>` is one of my devices' Tailscale address, and `<timezone>`
+is the server's time zone. Apart from NetBox's `configuration.py`, whose three secrets
+are replaced by `<...>`, no secret is in these files: the scripts read them at run time
+from root-only files on the node. A few personal descriptions were also shortened.
 
-Comments inside the copies are the ones on the node; a few were written before the
-[firewall](../docs/10-firewall.md) and still say "the LAN" where only my devices get in now,
-and the first line of `unbound-pi-hole.conf` still calls Unbound a recursive resolver, as
-it was set up before it started forwarding to Quad9
-([TSH-04](../troubleshooting/04-isp-intercepted-dns.md)). One exception goes the other way:
-the "how to run" comment in `kuma-ntfy.js` was rewritten here, so that the token is read
-from its file instead of typed; the copy in CT 105 still shows the older instruction.
-The dates in the comments are left out.
+The comments describe the setup as these pages document it, without dates. The settings
+are the node's, and every script does what the copy on the node does.
 
 | Area | File | On the node | What it does |
 |---|---|---|---|
 | DNS | [`unbound-pi-hole.conf`](dns/unbound-pi-hole.conf) | CT 100 `/etc/unbound/unbound.conf.d/pi-hole.conf` | Unbound for Pi-hole, from the Pi-hole guide (listens on localhost, DNSSEC, rebinding protection) |
-| DNS | [`unbound-forward-quad9.conf`](dns/unbound-forward-quad9.conf) | CT 100 `/etc/unbound/unbound.conf.d/forward-quad9.conf` | Forwards every query to Quad9 over TLS; added later, from this same text |
+| DNS | [`unbound-forward-quad9.conf`](dns/unbound-forward-quad9.conf) | CT 100 `/etc/unbound/unbound.conf.d/forward-quad9.conf` | Forwards every query to Quad9 over TLS |
 | Remote access | [`lxc-101-tun.conf`](remote-access/lxc-101-tun.conf) | `/etc/pve/lxc/101.conf` (two lines) | Gives the unprivileged container a TUN device |
 | Remote access | [`99-tailscale.conf`](remote-access/99-tailscale.conf) | CT 101 `/etc/sysctl.d/` | IPv4 and IPv6 forwarding |
 | Remote access | [`tailnet-policy.hujson`](remote-access/tailnet-policy.hujson) | Tailscale admin console, *Access controls* | Only my devices may use the subnet route and the exit node; tests that block a save which would let anyone else in |
@@ -65,8 +59,7 @@ The dates in the comments are left out.
 | Firewall | [`host.fw`](firewall/host.fw) | Node `/etc/pve/nodes/pve01/host.fw` | The node's own rules and options: the web UI and ping from my devices, the API from Prometheus and Homepage, nothing else |
 | Firewall | [`100.fw`](firewall/100.fw) | Node `/etc/pve/firewall/100.fw` | Pi-hole: DHCP, DNS, NTP, ping and TCP 7 for everyone; its web interface only through the proxy |
 | Firewall | [`105.fw`](firewall/105.fw) | Node `/etc/pve/firewall/105.fw` | Uptime Kuma: panel access plus the router's syslog |
-| Firewall | [`106.fw`](firewall/106.fw) | Node `/etc/pve/firewall/106.fw` | ntfy: the same rules as the other panels |
-| Firewall | [`ct-panel.fw`](firewall/ct-panel.fw) | Node `/etc/pve/firewall/1xx.fw` | The same file for CT 107 to CT 110: only the HTTPS proxy and the monitoring flows, SSH dropped |
+| Firewall | [`ct-panel.fw`](firewall/ct-panel.fw) | Node `/etc/pve/firewall/1xx.fw` | The same file for CT 106 to CT 110: only the HTTPS proxy and the monitoring flows, SSH dropped |
 | Firewall | [`ct-admin-only.fw`](firewall/ct-admin-only.fw) | Node `/etc/pve/firewall/102.fw` | Syncthing: admin access only, SSH dropped |
 | Firewall | [`112.fw`](firewall/112.fw) | Node `/etc/pve/firewall/112.fw` | The HTTPS proxy: ports 443 and 80 from my devices |
 | HTTPS | [`Caddyfile`](reverse-proxy/Caddyfile) | CT 112 `/etc/caddy/Caddyfile` | Caddy with its own certificate authority: one HTTPS name per panel, and the root certificate over plain HTTP |

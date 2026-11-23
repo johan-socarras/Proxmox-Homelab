@@ -1,4 +1,4 @@
-# Home lab: Homepage services (CT 110, homepage.lan).
+# Homepage services (CT 110, homepage.lan).
 - Infrastructure:
     - Proxmox:
         icon: /icons/proxmox.svg

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Home lab: configure ntfy in CT 106 for pve01 alerts.
+# Configure ntfy in CT 106 for pve01 alerts.
 # Creates a random topic name (/root/ntfy/topic), a write-only publisher user and one access token per sender
 # (/root/ntfy/token-<sender>). Safe to re-run: existing topic and tokens are kept.
 set -e

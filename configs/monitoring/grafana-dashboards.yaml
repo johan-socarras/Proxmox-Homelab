@@ -1,5 +1,4 @@
-# CT 108: /etc/grafana/provisioning/dashboards/homelab.yaml
-# Home lab: dashboards kept as files in /var/lib/grafana/dashboards.
+# Dashboards kept as files in /var/lib/grafana/dashboards (CT 108: /etc/grafana/provisioning/dashboards/homelab.yaml).
 apiVersion: 1
 providers:
   - name: homelab

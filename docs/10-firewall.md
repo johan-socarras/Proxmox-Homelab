@@ -8,7 +8,7 @@ devices and the services that need them. SSH is off everywhere: on the node and 
 every container ([No SSH](#no-ssh)). The rest of the house (every other device,
 guests included) still gets its address, DNS and time from Pi-hole, and nothing else.
 
-Before it, anything on the home network could open the Proxmox login page, SSH into
+Without it, anything on the home network could open the Proxmox login page, SSH into
 the node and reach every service, including Grafana, which shows its dashboards
 without a login.
 
@@ -41,10 +41,7 @@ flowchart LR
     Pi-hole's DHCP so its address does not move, plus `<lan>.101`, the Tailscale
     container. Tailscale keeps source NAT on ([Remote access](03-remote-access.md)),
     so everything that comes in through the tailnet arrives with that one address:
-    one entry covers all my devices away from home. That is safe only because the
-    tailnet policy lets nobody but me use the subnet route
-    ([Remote access](03-remote-access.md)); without it, any device added to or shared
-    into the tailnet would arrive here as a trusted device.
+    one entry covers all my devices away from home ([why that is safe](#why-this-way)).
   - `reverse-proxy`: CT 112, the HTTPS proxy in front of the panels
     ([HTTPS for the panels](#https-for-the-panels)).
   - Aliases such as `grafana`, `ntfy` or `pve01` name each server, so a rule reads as
@@ -61,7 +58,7 @@ flowchart LR
 
 | Where | Who gets in |
 |---|---|
-| CT 105 to CT 110, the panels | `panel-access` only, except SSH ([example](../configs/firewall/ct-panel.fw)). CT 105 also takes syslog (UDP 514) from the router ([`105.fw`](../configs/firewall/105.fw)); CT 106 (ntfy) has the same rules ([`106.fw`](../configs/firewall/106.fw)) |
+| CT 105 to CT 110, the panels | `panel-access` only, except SSH ([example](../configs/firewall/ct-panel.fw)). CT 105 also takes syslog (UDP 514) from the router ([`105.fw`](../configs/firewall/105.fw)) |
 | CT 112, the HTTPS proxy | HTTPS (443) and the redirect to it (80) from my devices. SSH: nobody ([`112.fw`](../configs/firewall/112.fw)) |
 | CT 102, Syncthing | `admin-access` only, except SSH: my devices, and Homepage on the web interface's port ([`ct-admin-only.fw`](../configs/firewall/ct-admin-only.fw)) |
 | CT 100, Pi-hole | Everyone: DHCP, DNS, NTP, ping and TCP 7. `panel-access`: the web interface. SSH: nobody ([`100.fw`](../configs/firewall/100.fw)) |
@@ -86,9 +83,9 @@ for last.
 
 ## HTTPS for the panels
 
-The panels used to answer over plain HTTP, so their logins crossed the LAN in clear
-text. Now one container, CT 112, runs [Caddy](https://caddyserver.com/) as a reverse
-proxy in front of all of them except Syncthing, whose web interface already serves HTTPS
+The panels themselves answer over plain HTTP, which would send their logins across the
+LAN in clear text. One container, CT 112, runs [Caddy](https://caddyserver.com/) as a
+reverse proxy in front of all of them except Syncthing, whose web interface serves HTTPS
 with a self-signed certificate of its own ([`Caddyfile`](../configs/reverse-proxy/Caddyfile)):
 
 - **One HTTPS name per panel:** `grafana.lan`, `netbox.lan`, `uptime-kuma.lan`,
@@ -107,9 +104,9 @@ with a self-signed certificate of its own ([`Caddyfile`](../configs/reverse-prox
   [`nginx-netbox.conf`](../configs/ipam/nginx-netbox.conf),
   [`ntfy-server.yml`](../configs/alerting/ntfy-server.yml),
   [`services.yaml`](../configs/dashboard/services.yaml)).
-- **No way around it.** The panels' firewall accepts the proxy and the monitoring
-  flows, not my devices, so a panel cannot be opened over plain HTTP by mistake. That
-  includes ntfy: the ntfy app on my devices subscribes through `https://ntfy.lan` and trusts the
+- **No way around it.** The panels' firewall accepts the proxy and the monitoring flows,
+  not my devices, so a panel cannot be opened over plain HTTP by mistake. That includes
+  ntfy: the ntfy app on my devices subscribes through `https://ntfy.lan` and trusts the
   private CA, and the alert senders still post to ntfy's port 80 inside the server.
 
 **The trade-off:** the proxy is one more piece the panels depend on. If it stops, the
@@ -120,11 +117,10 @@ though its nightly backup carries the key too ([How it is built](../README.md#ho
 
 ## One rule per flow
 
-The monitoring services used to share one IP set that the panels accepted on every
-port. Grafana, which shows its dashboards without a login, could therefore open any
-port on any panel, including NetBox, Syncthing and the Pi-hole interface. Now each
-connection that a service really makes has its own rule, and nothing else gets
-through:
+Each connection that a monitoring service really makes has its own rule, and nothing
+else gets through. One IP set accepted on every port would let Grafana, which shows its
+dashboards without a login, open any port on any panel, including NetBox, Syncthing and
+the Pi-hole interface.
 
 | From | To | Port | Why |
 |---|---|---|---|
@@ -188,12 +184,11 @@ it then takes a screen and a keyboard on the server.
 
 Two problems showed up in the first minutes, both through the log of dropped packets.
 
-1. **Home devices probe their DNS server.** Some of them ping their DNS
-   server and, when the ping gets no answer, try TCP port 7 (echo).
-   Both were dropped. A device that decides its DNS server is down may fall back to a
-   secondary resolver, one that does not filter. Ping and TCP 7 are now open on
-   CT 100 for everyone. Nothing listens on port 7, so the container answers with a
-   reset, exactly as before the firewall.
+1. **Home devices probe their DNS server.** Some of them ping their DNS server and, when
+   the ping gets no answer, try TCP port 7 (echo). Both were dropped. A device that
+   decides its DNS server is down may fall back to a secondary resolver, one that does
+   not filter. Ping and TCP 7 are open on CT 100 for everyone. Nothing listens on
+   port 7, so the container answers with a reset.
 2. **Resets from the containers were lost.** With the firewall on, connecting to a
    closed port on any container hung for seconds instead of being refused at once,
    even on containers without a firewall of their own. A capture on the container's
@@ -265,20 +260,20 @@ guest, so it waits for a maintenance window.
   subnet.
 - **One rule set for LAN and remote access.** Because Tailscale traffic arrives from
   one known address, the same allow-list works at home and away, with no rules for
-  tailnet addresses. The trade-off is that the firewall cannot tell my tailnet devices
-  apart, so the decision of who gets in through Tailscale lives in the tailnet policy,
-  whose tests fail a save that would let anyone else in.
+  tailnet addresses. The trade-off is that the firewall cannot tell tailnet devices
+  apart: who gets in through Tailscale is decided by the
+  [tailnet policy](03-remote-access.md#why-this-way).
 - **DHCP and DNS stay open to everyone.** They are the services the whole house needs.
 - **Per-container switches** made a gradual rollout possible, without downtime and with
   a way back at each step.
 
 **Limit:** an IP address is not an identity. Anything on the LAN can take a trusted
-address, so the logins remain the real defense: two-factor authentication on Proxmox
-and a password for any change on the panels. Since the panels moved behind HTTPS, and
-Syncthing serves its own, those passwords no longer cross the network in clear text. The
+address, so the logins remain the real defense: two-factor authentication on Proxmox and
+a password for any change on the panels. With the panels behind HTTPS, and Syncthing
+serving its own, those passwords do not cross the network in clear text. The
 one exception is outside the homelab: the home router's own web page, which Homepage
-links over plain HTTP. The dashboards that open without a login
-can be read from a trusted address, not changed. The firewall shrinks what an untrusted device can even
+links over plain HTTP. The dashboards that open without a login can be read from a
+trusted address, not changed. The firewall shrinks what an untrusted device can even
 try. Moving the untrusted devices to a network segment of their own would be the next
 step.
 
@@ -296,14 +291,13 @@ step.
   guest firewall but no SSH service either. The SPICE proxy and rpcbind on the node time
   out too, while the web interface opens and Prometheus keeps reading the node.
 - The monitoring kept working: both Prometheus targets stayed `up`, Homepage could still
-  reach everything it checks, the ntfy app kept its connections, and Pi-hole kept answering every
-  device in the house after its own firewall went on.
-- HTTPS, from my devices with the root certificate installed: the seven
-  `.lan` names open with a valid certificate. Opening a panel directly, such as
-  `http://<lan>.108:3000`, times out, and so does ntfy's port 80 since the ntfy app moved
-  to HTTPS: a test alert from Proxmox reached it through the proxy. The Proxmox web
-  interface still opens, both Prometheus targets stayed `up` and every Uptime Kuma
-  probe stayed green.
+  reach everything it checks, the ntfy app kept its connections, and Pi-hole kept
+  answering every device in the house after its own firewall went on.
+- HTTPS, from my devices with the root certificate installed: the seven `.lan` names
+  open with a valid certificate. Opening a panel directly, such as
+  `http://<lan>.108:3000`, times out, and so does ntfy's port 80, while a test alert
+  from Proxmox reaches the ntfy app through the proxy. The Proxmox web interface still
+  opens, both Prometheus targets stayed `up` and every Uptime Kuma probe stayed green.
 - One rule per flow: after the old rules were removed, every Uptime Kuma probe stayed
   green, both Prometheus targets stayed `up`, the Grafana dashboard kept drawing data,
   every Homepage widget and status check loaded, and a test notification from the node

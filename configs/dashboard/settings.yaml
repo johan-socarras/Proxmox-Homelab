@@ -1,5 +1,4 @@
-# CT 110: /opt/homepage/config/settings.yaml
-# Home lab: Homepage settings.
+# Homepage settings (CT 110: /opt/homepage/config/settings.yaml).
 title: pve01 home lab
 description: Start page of the home lab
 theme: dark

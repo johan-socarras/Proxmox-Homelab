@@ -15,7 +15,7 @@
 		{"src": ["autogroup:owner"], "dst": ["autogroup:internet"], "ip": ["*"]},
 	],
 
-	// Tailscale SSH: unchanged default, each user only into their own devices.
+	// Tailscale SSH: Tailscale's default, each user only into their own devices.
 	"ssh": [
 		{
 			"action": "check",

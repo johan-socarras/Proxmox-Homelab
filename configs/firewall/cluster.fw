@@ -4,7 +4,7 @@ enable: 1
 
 [ALIASES]
 
-local_network <lan>.10 # Single node: only pve01 itself; admin access comes from the admin-access group
+local_network <lan>.10 # Single node: only pve01 itself; the web UI is opened by the rules in host.fw
 pve01 <lan>.10 # pve01 host: sends Proxmox and smartd alerts to ntfy
 pihole <lan>.100 # pihole-dns CT 100
 syncthing <lan>.102 # syncthing CT 102

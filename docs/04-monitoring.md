@@ -81,8 +81,8 @@ flowchart LR
   ([`grafana-override.conf`](../configs/monitoring/grafana-override.conf)). The home
   dashboard is the community dashboard *Proxmox via Prometheus* (grafana.com 10347).
 - **Access:** the devices the [firewall](10-firewall.md) lets in can view the dashboards
-  without a login (anonymous *Viewer*); changing anything needs the admin login. Usage reports, update checks, news and Gravatar are
-  off.
+  without a login (anonymous *Viewer*); changing anything needs the admin login. Usage
+  reports, update checks, news and Gravatar are off.
 - **Three alert rules**, provisioned from a script
   ([`make-rules.py`](../configs/monitoring/make-rules.py)) and evaluated every minute:
 

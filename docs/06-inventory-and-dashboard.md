@@ -31,9 +31,9 @@ address, the free addresses are checked in NetBox.
   duplicating them. (The loaders are not published: they hold the household's device
   list and the MAC addresses.)
 - **Access:** the devices the [firewall](10-firewall.md) lets in can browse the
-  inventory without logging in, but not
-  users, tokens or permissions (`EXEMPT_VIEW_PERMISSIONS`). Changes need the admin
-  login. `ISOLATED_DEPLOYMENT` and no census reporting: it never contacts the internet.
+  inventory without logging in, but not users, tokens or permissions
+  (`EXEMPT_VIEW_PERMISSIONS`). Changes need the admin login. `ISOLATED_DEPLOYMENT` and
+  no census reporting: it never contacts the internet.
 
 ### Why this way
 

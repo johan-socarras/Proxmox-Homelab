@@ -1,5 +1,5 @@
 # Copy of /opt/netbox/netbox/netbox/configuration.py in CT 109 (netbox.lan), with the secrets replaced by <...>.
-# Home lab: generated on pve01 by /root/netbox/make-config.py from
+# Generated on pve01 by /root/netbox/make-config.py from
 # /root/netbox/{db-password,secret-key,token-pepper}; the secrets exist only in this file on CT 109 and in /root/netbox.
 ALLOWED_HOSTS = ['netbox.lan', '<lan>.109', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = ['https://netbox.lan']
@@ -20,7 +20,7 @@ REDIS = {
 }
 SECRET_KEY = '<secret-key>'
 API_TOKEN_PEPPERS = {1: '<token-pepper>'}
-# Anyone on the LAN can browse; changes need a login.
+# The devices the firewall lets in can browse; changes need a login.
 LOGIN_REQUIRED = False
 # What anonymous visitors may see: the inventory, never users, tokens or permissions.
 EXEMPT_VIEW_PERMISSIONS = [

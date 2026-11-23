@@ -1,4 +1,4 @@
-# Home lab: Prometheus in CT 107 (prometheus.lan).
+# Prometheus in CT 107 (prometheus.lan).
 # Scrapes itself and Proxmox VE (pve01) through prometheus-pve-exporter, which runs on this container
 # on 127.0.0.1:9221 with the read-only API token prometheus@pve!exporter.
 global:

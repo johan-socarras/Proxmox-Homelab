@@ -8,8 +8,9 @@ The obvious suspect was the new server.
 
 ## What the logs said
 
-Three sources were lined up by timestamp: the Wi-Fi event log of a client
-device, the kernel log of the node, and the router's own system log. Pi-hole's query log filled in the DNS side.
+Three sources were lined up by timestamp: the Wi-Fi event log of a client device, the
+kernel log of the node, and the router's own system log. Pi-hole's query log filled in
+the DNS side.
 
 | Question | Finding |
 |---|---|
@@ -36,8 +37,8 @@ Instead of guessing, the next outage had to explain itself:
 
 The same night, the router's **deep packet inspection** feature was turned off. The
 router log shows the change at 23:41: the services it restarted include the inspection
-engine. The last failure the probes recorded
-was 40 minutes earlier, and the router has not dropped since.
+engine. The last failure the probes recorded was 40 minutes earlier, and the router has
+not dropped since.
 
 Two days later the internet probes did fail again, for 26 minutes. That time the
 router probe stayed green, which pointed away from the router: the cause was a lab
@@ -45,9 +46,8 @@ firewall VM that came up on the home network with its factory settings
 ([Labs](../docs/09-labs.md#lesson-learned-the-first-nic-is-the-lan)). The pattern of
 green and red probes alone told the two problems apart.
 
-The most likely cause is that inspecting every connection saturated the router
-once a server added traffic of its own. This is inferred from
-the timing, not measured.
+The most likely cause is that inspecting every connection saturated the router once a
+server added traffic of its own. This is inferred from the timing, not measured.
 
 **Trade-off:** the router no longer filters malicious sites by inspection. Pi-hole's
 blocklist covers part of that by DNS, but it does not inspect traffic.

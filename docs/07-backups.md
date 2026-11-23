@@ -2,11 +2,11 @@
 
 ## What it does
 
-Every service container is backed up each night to a dedicated SSD, with daily,
-weekly and monthly copies kept. The node's own configuration is archived each night
-too. The newest copy of everything is then synced, one way, to another device at home, so a
-dead server does not take its backups with it. A container has been restored from its
-nightly backup, started and checked; a full node rebuild has not been tested.
+Every service container is backed up each night to a dedicated SSD, with daily, weekly
+and monthly copies kept. The node's own configuration is archived each night too. The
+newest copy of everything is then synced, one way, to another device at home, so a dead
+server does not take its backups with it. A container has been restored from its nightly
+backup, started and checked; a full node rebuild has not been tested.
 
 ```mermaid
 flowchart LR
@@ -46,7 +46,8 @@ flowchart LR
   - The Syncthing container mounts that folder **read-only** and shares it as a
     send-only folder. The receiving device takes it into a receive-only folder. If it
     was off, it catches up when it starts.
-  - The receiving device holds only the newest night (about 9.5 GB); the history stays on the server.
+  - The receiving device holds only the newest night (about 9.5 GB); the history stays
+    on the server.
 - **Snapshots before risky changes,** such as system updates or a resolver change, as a
   quick rollback point next to the backups.
 
@@ -63,9 +64,8 @@ flowchart LR
   the node's files from the configuration archive and restoring every container),
   which is what replacing the failing system disk would take
   ([TSH-03](../troubleshooting/03-failing-system-ssd.md)).
-- **Timing:** the first run backed up the five containers that existed then in 1 min
-  25 s. A manual run of every container after the disk alert in
-  [TSH-03](../troubleshooting/03-failing-system-ssd.md) took 4 min 32 s and wrote about
+- **Timing:** a manual run of every container, after the disk alert in
+  [TSH-03](../troubleshooting/03-failing-system-ssd.md), took 4 min 32 s and wrote about
   9.5 GB.
 
 ## Why this way
@@ -106,5 +106,5 @@ SHA-256 hashes (`sha256sum` on the node, the same check on the device).
 ![Syncthing in CT 102: the pve01-backups folder up to date and shared as send only](img/syncthing.png)
 
 Syncthing in CT 102. `pve01-backups` is the folder with the newest backups; the upload
-icon marks it as send only, so nothing on the receiving device can change what the server holds. The
-other shared folder, the device names and the device ID are redacted.
+icon marks it as send only, so nothing on the receiving device can change what the
+server holds. The other shared folder, the device names and the device ID are redacted.

@@ -1,10 +1,5 @@
 # TSH-02 — The new recursive resolver said real names did not exist
 
-> **Revised by [TSH-04](04-isp-intercepted-dns.md).** Three days later it turned out that
-> the ISP answers every plain DNS query itself, including the queries below that were
-> meant for the authoritative servers. The fix on this page worked; the explanation
-> written at the time did not hold. See [Later finding](#later-finding).
-
 ## The report
 
 On the afternoon Unbound replaced Google and Cloudflare as Pi-hole's upstream
@@ -39,10 +34,7 @@ api.edge.<domain-a>                @<servers 3 and 4>       →  NXDOMAIN
 na.api.<domain-c>                  @<its name server>       →  SERVFAIL
 ```
 
-As [TSH-04](04-isp-intercepted-dns.md) showed later, these replies did not come from the
-authoritative servers: the ISP's resolver answered them.
-
-## Diagnosis at the time
+## First diagnosis: QNAME minimization
 
 **QNAME minimization looked like the cause.** To leak less, a resolver with this feature
 does not send the full name to every server in the chain: it asks for one more label at
@@ -52,11 +44,10 @@ for them, and the replies above were `NXDOMAIN` or `SERVFAIL`, so the minimized 
 were taken to be what broke resolution. The full names resolved through `1.1.1.1` and
 `8.8.8.8`, which seemed to agree.
 
-Two parts of that reasoning did not hold. The replies came from the ISP's resolver, not
-from the authoritative servers. And Unbound does not stop at an error on a minimized
-query: it asks again with the full name, except after an `NXDOMAIN` from a
-DNSSEC-signed zone. Turning the feature off did make the names resolve; why the
-minimized queries failed was never proven.
+The reasoning had a gap: Unbound does not stop at an error on a minimized query; it
+asks again with the full name, except after an `NXDOMAIN` from a DNSSEC-signed zone.
+Turning the feature off did make the names resolve; why the minimized queries failed
+was never proven.
 
 ## Fix
 
@@ -68,16 +59,20 @@ pct exec 100 -- sh -c "printf '\n    qname-minimisation: no\n' >> /etc/unbound/u
 ```
 
 Minutes later all eight names resolved through Pi-hole. Blocking and DNSSEC validation
-were unchanged: `doubleclick.net` → `0.0.0.0`, `dnssec-failed.org` → `SERVFAIL`.
-
-**Trade-off, as it was understood then:** the root and top-level-domain servers would
-see full query names instead of only the part they need, and still no single third
-party would receive every query from the house. Neither turned out to be true: as the
-[later finding](#later-finding) shows, the root servers never received these queries,
-and the ISP's resolver was answering all of them.
+still worked: `doubleclick.net` → `0.0.0.0`, `dnssec-failed.org` → `SERVFAIL`.
 
 The second report itself was never confirmed in the query log; the names behind its
 sign-in page failed the same way and resolved after the fix.
+
+## The real cause
+
+Three days later, [TSH-04](04-isp-intercepted-dns.md) found that the upstream network
+answers every plain DNS query on port 53 itself, so Unbound's queries never reached the
+root servers or the authoritative servers. The direct queries above, and the comparison
+with `1.1.1.1` and `8.8.8.8`, went through the same path: every answer on this page came
+from the ISP's resolver, and the fix worked without the diagnosis being right. Unbound
+forwards to Quad9 over TLS ([DNS](../docs/02-dns.md)), where QNAME minimization has no
+effect, so the `qname-minimisation: no` line changes nothing.
 
 ## Lessons
 
@@ -88,13 +83,3 @@ sign-in page failed the same way and resolved after the fix.
   answer without it did not come from them ([TSH-04](04-isp-intercepted-dns.md)).
 - A fix that works does not prove the explanation. Write down what was proven and what
   was assumed.
-
-## Later finding
-
-Three days later, [TSH-04](04-isp-intercepted-dns.md) showed that the upstream network
-was answering every plain DNS query on port 53, so Unbound's queries never reached the
-root servers or the authoritative servers. The direct queries to the authoritative
-servers, and the comparison with `1.1.1.1` and `8.8.8.8`, went through the same path, so
-every answer on this page came from the ISP's resolver. Unbound now forwards to Quad9
-over TLS ([DNS](../docs/02-dns.md)), where QNAME minimization has no effect;
-`qname-minimisation: no` stays in its configuration as a leftover of this incident.

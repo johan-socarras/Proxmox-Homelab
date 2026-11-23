@@ -31,12 +31,12 @@ flowchart LR
   ([Firewall](10-firewall.md)).
 - **One token per sender.** Proxmox, Uptime Kuma and Grafana each publish with their
   own access token, so any one of them can be revoked without touching the others;
-  smartd's alerts travel inside Proxmox's, so it has no token of its own (an unused one
-  was revoked). The topic and the tokens live in a root-only directory on the node and
-  are read from there, never typed. The setup script creates the topic and the first
-  tokens once and keeps them on later runs
-  ([`setup-ntfy.sh`](../configs/alerting/setup-ntfy.sh)); Grafana's was added later with
-  the same `ntfy token add` command.
+  smartd's alerts travel inside Proxmox's, so it has no token of its own. The topic and
+  the tokens live in a root-only directory on the node and are read from there, never
+  typed. The setup script creates the topic and the tokens for Proxmox and Uptime Kuma
+  once and keeps them on later runs
+  ([`setup-ntfy.sh`](../configs/alerting/setup-ntfy.sh)); Grafana's comes from the same
+  `ntfy token add` command.
 - **Proxmox's notification system** has two ntfy targets and routes by severity:
   - `info` and `notice` (backup reports, available updates) → low priority, silent, as
     one line: the title says what happened and the body points to Proxmox's task history;
@@ -49,8 +49,8 @@ flowchart LR
 - **Uptime Kuma** notifies only from its *Pi-hole DNS* and *HTTPS with DNS* probes
   ([`kuma-ntfy.js`](../configs/alerting/kuma-ntfy.js)), and **Grafana** from its three
   rules ([Monitoring](04-monitoring.md)).
-- **Message size raised to 32 KB.** The backup report for every container is longer
-  than ntfy's 4 KB default, and ntfy rejected it with *attachments not allowed*. The
+- **Message size of 32 KB.** The backup report for every container is longer than
+  ntfy's 4 KB default, which ntfy rejects with *attachments not allowed*. The
   app connects straight to this server, without Firebase, so the larger limit is
   safe.
 - **My devices** run the ntfy app, subscribed to the topic through

@@ -44,8 +44,8 @@ being able to rebuild any service from last night's backup.
 
 ![Network map, read from the internet down: the home router, the home LAN with my own devices, every other device and the device that receives the backups, and pve01 with its services and the labs behind OPNsense. Six flows are drawn, each in its own color: DNS, remote access over Tailscale, the panels over HTTPS, alerts, backups and the labs](docs/img/network-map.png)
 
-Everything described here was built and running when it was written. Each page explains what a service does, how
-it is built, why it is built that way, and how to verify it.
+Everything described here was built and running when it was written. Each page explains
+what a service does, how it is built, why it is built that way, and how to verify it.
 
 ## Services
 
@@ -113,7 +113,7 @@ Real incidents from this network, written up as investigations:
 | ID | Case | What it shows |
 |---|---|---|
 | [TSH-01](troubleshooting/01-internet-outages.md) | The internet kept dropping after the server went in | Correlating logs from the router, the node and a client device; isolating the failing segment; ruling out the obvious suspect |
-| [TSH-02](troubleshooting/02-recursive-dns-nxdomain.md) | The new recursive resolver said real names did not exist | Comparing resolvers, QNAME minimization, a diagnosis revised by TSH-04 |
+| [TSH-02](troubleshooting/02-recursive-dns-nxdomain.md) | The new recursive resolver said real names did not exist | Comparing resolvers, QNAME minimization, a first diagnosis that TSH-04 overturned |
 | [TSH-03](troubleshooting/03-failing-system-ssd.md) | The system SSD started reallocating sectors | SMART attributes, alerting that only fires on change, backup strategy under a failing disk |
 | [TSH-04](troubleshooting/04-isp-intercepted-dns.md) | The root servers answered like a resolver | Reading DNS flags, probing an address where nothing should answer, proving DNS interception, DNS over TLS |
 
@@ -142,14 +142,14 @@ Real incidents from this network, written up as investigations:
 
 ## Security and privacy
 
-Home LAN addresses are written as `<lan>.N`: the network prefix is not shown, and the
-host number follows the container ID, so CT 1*xx* is `<lan>.1xx`. Tailscale addresses,
-the public IP, personal login names, API tokens, the ntfy topic, passwords, hardware models and serial numbers,
-the router's make and the time zone are removed. The service accounts (`prometheus@pve`,
-`homepage@pve`, `alerts-publisher`) are shown because the design depends on them. Files under `configs/` are copies of what runs on the
-server with those values replaced by `<placeholders>`, and the LAN prefix by `<lan>`;
-apart from them, only a few personal descriptions were shortened. Screenshots are cropped, private
-details are covered with solid boxes, and the images are saved again without metadata.
+Home LAN addresses are written as `<lan>.N`, without the network prefix. Tailscale
+addresses, the public IP, personal login names, API tokens, the ntfy topic, passwords,
+hardware models and serial numbers, the router's make and the time zone are removed.
+The service accounts (`prometheus@pve`, `homepage@pve`, `alerts-publisher`) are shown
+because the design depends on them. Files under `configs/` are copies of what runs on
+the server with those values replaced by `<placeholders>`
+([how](configs/README.md)). Screenshots are cropped, private details are covered with
+solid boxes, and the images are saved again without metadata.
 
 The labs use `10.10.10.0/24`, `10.10.20.0/24` and Whonix's `10.152.128.0/18`, which
 exist only inside their lab bridges.

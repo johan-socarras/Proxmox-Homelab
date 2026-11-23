@@ -79,11 +79,9 @@ From an outside network, away from the home Wi-Fi, with the exit node selected:
 - the node listed it as a direct peer-to-peer connection, not relayed;
 - in six minutes Pi-hole logged 181 queries from the VPN container, 68 of them blocked.
 
-After the tailnet policy went in, the same test from an outside network again showed the home
-address, and `homepage.lan` and a panel opened through the HTTPS proxy. The policy's
-own tests passed on save: my user reaches DNS, the proxy, the Proxmox web UI, the
-internet through the exit node and my own devices, and any other user reaches none of
-them.
+With the tailnet policy in place, the same test from an outside network again showed the
+home address, and `homepage.lan` and a panel opened through the HTTPS proxy. The
+policy's own tests passed on save.
 
 ## How to verify
 

@@ -39,8 +39,8 @@ drill -u example.com @203.0.113.77   →  NOERROR, 2 answers
 drill -t example.com @203.0.113.77   →  NOERROR, 2 answers
 ```
 
-The same from another device on the home LAN, outside the lab. Something on the path answers
-every DNS query on port 53, over UDP and TCP, whatever the destination address.
+The same from another device on the home LAN, outside the lab. Something on the path
+answers every DNS query on port 53, over UDP and TCP, whatever the destination address.
 
 **Who answers?** A CHAOS-class `id.server` query to that same empty address returned
 the host name of a caching name server belonging to the ISP, and `version.bind` came
@@ -120,5 +120,5 @@ Windows activated.
   answering.
 - The two resolvers failed differently on the same network. The stricter one exposed
   the problem the other had been hiding.
-- This interception may also explain the failures in
-  [TSH-02](02-recursive-dns-nxdomain.md), which happened before it was found.
+- The answers in [TSH-02](02-recursive-dns-nxdomain.md), which came before this was
+  found, went through the same interception.

@@ -61,14 +61,12 @@ flowchart LR
   (RFC 8375) and, more recently, `.internal`. Moving to one of them would mean renaming
   every panel, reissuing the HTTPS certificates and changing every record, so the house
   keeps `.lan`; nothing outside it ever resolves these names.
-- **Encrypted forwarding, because recursion was not possible here.** Before Unbound,
-  Pi-hole forwarded to Google and Cloudflare in plain text. Unbound was then set up as a
-  recursive resolver, meant to ask the root servers and each domain's own servers
-  directly. It later turned out that the upstream network answers every plain DNS query
-  itself, whatever address it is sent to
-  ([TSH-04](../troubleshooting/04-isp-intercepted-dns.md)). The "recursive" resolver was
-  really being served by the ISP's resolver, and port 53 cannot be made to reach anyone
-  else. Encryption is the only way past that, and it needs a resolver at the other end.
+- **Encrypted forwarding, because recursion is not possible here.** The upstream network
+  answers every plain DNS query itself, whatever address it is sent to
+  ([TSH-04](../troubleshooting/04-isp-intercepted-dns.md)), so a recursive resolver that
+  asks the root servers and each domain's own servers is really served by the ISP's
+  resolver, and port 53 cannot be made to reach anyone else. Encryption is the only way
+  past that, and it needs a resolver at the other end.
 - **Why Quad9.** A non-profit foundation that does not log the addresses of the clients
   that query it, under Swiss privacy law, and that blocks known malware domains on top
   of the Pi-hole blocklist. The trade-off is stated plainly: Quad9 sees the names the
@@ -119,8 +117,7 @@ nslookup -type=TXT proto.on.quad9.net <lan>.100
 
 ![Pi-hole dashboard: 90,087 queries in 24 hours, 22.8 % of them blocked, 71,493 domains on the blocklists](img/pihole-dashboard.png)
 
-The dashboard over the last 24 hours, captured before Pi-hole took over DHCP. Under
-*Upstream servers*, most answers come from the cache and the blocklist, and
-`localhost#5335` is Unbound. The redacted entry is the router: at the time, Pi-hole asked
-it for the names of the devices it did not know (conditional forwarding). Now Pi-hole
-hands out the addresses and knows every name itself, so that forwarding was removed.
+The dashboard over the last 24 hours. Under *Upstream servers*, most answers come from
+the cache and the blocklist, and `localhost#5335` is Unbound. The redacted entry is the
+router: the capture predates Pi-hole's DHCP server, when Pi-hole asked the router for the
+names of the devices it did not know (conditional forwarding).

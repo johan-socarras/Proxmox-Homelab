@@ -1,5 +1,4 @@
-# CT 108: /etc/grafana/provisioning/datasources/prometheus.yaml
-# Home lab: Prometheus in CT 107 as the default data source.
+# Prometheus in CT 107 as the default data source (CT 108: /etc/grafana/provisioning/datasources/prometheus.yaml).
 apiVersion: 1
 datasources:
   - name: Prometheus

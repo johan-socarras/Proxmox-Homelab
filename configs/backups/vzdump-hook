@@ -1,5 +1,5 @@
 #!/bin/sh
-# Home lab: vzdump hook. After every backup job, refresh /mnt/pve/backups/latest (copy outside pve01).
+# vzdump hook: after every backup job, refresh /mnt/pve/backups/latest (copy outside pve01).
 case "$1" in
   job-end) exec /usr/local/sbin/pve-latest-copy ;;
 esac

@@ -1,4 +1,4 @@
-# Home lab: Homepage (gethomepage.dev) v2.5.0 built from source in /opt/homepage, on port 80, with the
+# Homepage (gethomepage.dev) v2.5.0 built from source in /opt/homepage, on port 80, with the
 # official Node.js 22 LTS in /opt/node, updated by hand (docs/08). Debian 13 ships Node 20.19, and Homepage 2.5.0's
 # locked dependencies need 22 (undici 8, via @kubernetes/client-node, needs 22.19 or later).
 [Unit]
