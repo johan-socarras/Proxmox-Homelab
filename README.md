@@ -37,7 +37,7 @@ being able to rebuild any service from last night's backup.
 - A backup counts once it has been restored and started, not when the job reports
   success ([Backups](docs/07-backups.md)).
 
-> **A snapshot, not a live map.** This repository documents how the home lab was
+> **A snapshot, not a live map.** This repository documents how the homelab was
 > designed and built, as of November 2026. Identifying details are left out or
 > generalized, and the network keeps changing after publication, so addresses, names
 > and versions here may no longer match what runs at home.

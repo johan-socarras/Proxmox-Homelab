@@ -126,8 +126,8 @@ pveum acl list | grep PVEAuditor                               # / prometheus@pv
 ```
 
 From one of my devices ([Firewall](10-firewall.md)): `https://grafana.lan` opens the
-Proxmox dashboard without a login,
-and `https://grafana.lan/alerting/list` shows the three rules in *Normal* state.
+Proxmox dashboard without a login, and `https://grafana.lan/alerting/list` shows the
+three rules in *Normal* state.
 
 ### What it looks like
 

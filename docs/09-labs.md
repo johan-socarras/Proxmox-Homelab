@@ -6,9 +6,8 @@ Networks inside the server, each on a bridge of its own, for practicing firewall
 and Windows domain administration without touching anything real. An OPNsense
 firewall is their router. Behind it, the lab LAN holds a Debian client, a Windows
 Server domain controller and a Windows 11 workstation joined to its domain; a second
-network, SANDBOX, holds the disposable browsers
-described in [Browser sandbox](11-browser-sandbox.md) and
-[Tor isolation](12-tor-isolation.md).
+network, SANDBOX, holds the disposable browsers described in
+[Browser sandbox](11-browser-sandbox.md) and [Tor isolation](12-tor-isolation.md).
 
 Both lab networks are locked out of the home network: they reach the internet and the
 DNS they need, nothing else. The lab LAN asks OPNsense, which forwards to the Pi-hole;

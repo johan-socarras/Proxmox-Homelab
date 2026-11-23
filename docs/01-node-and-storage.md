@@ -93,7 +93,7 @@ pct config 107 | grep -E 'unprivileged|features|onboot|net0'
 ![The Proxmox VE view of pve01: the service containers running with their function tags, the Active Directory lab on for a session, the other lab machines off, and the three storages](img/proxmox-datacenter.png)
 
 The node view of `pve01`, captured before CT 112, the HTTPS proxy, was added. Every
-service container shown is running and tagged by function.
-The lab machines start only when needed: here OPNsense, the domain controller and the
-Windows 11 workstation are on for a lab session, and the grey icons are the ones that
-are off. The redacted containers belong to other projects and are out of scope here.
+service container shown is running and tagged by function. The lab machines start only
+when needed: here OPNsense, the domain controller and the Windows 11 workstation are on
+for a lab session, and the grey icons are the ones that are off. The redacted
+containers belong to other projects and are out of scope here.
